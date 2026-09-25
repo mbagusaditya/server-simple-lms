@@ -1,6 +1,8 @@
 import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
+from modules import get_assignments, get_courses, get_students
+
 
 class SimpleHandler(BaseHTTPRequestHandler):
     def send_json(self, data, status=200):
@@ -17,22 +19,13 @@ class SimpleHandler(BaseHTTPRequestHandler):
         self.send_json({"status": "ok"})
 
     def courses(self):
-        self.send_json(
-            {
-                "courses": [
-                    {"id": 1, "name": "Pemrograman Sisi Server"},
-                    {"id": 2, "name": "Basis Data"},
-                ]
-            }
-        )
+        self.send_json({"courses": get_courses()})
 
     def students(self):
-        self.send_json(
-            {"students": [{"id": 1, "name": "Andi"}, {"id": 2, "name": "Siti"}]}
-        )
+        self.send_json({"students": get_students()})
 
     def assignments(self):
-        self.send_json({"assignments": [{"id": 1, "title": "Backend Fundamentals"}]})
+        self.send_json({"assignments": get_assignments()})
 
     def fallback(self):
         self.send_json({"detail": "Not Found"}, 404)
