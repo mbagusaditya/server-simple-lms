@@ -10,37 +10,47 @@ class SimpleHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
+    def index(self):
+        self.send_json({"message": "Simple LMS Backend"})
+
     def health(self):
         self.send_json({"status": "ok"})
+
+    def courses(self):
+        self.send_json(
+            {
+                "courses": [
+                    {"id": 1, "name": "Pemrograman Sisi Server"},
+                    {"id": 2, "name": "Basis Data"},
+                ]
+            }
+        )
+
+    def students(self):
+        self.send_json(
+            {"students": [{"id": 1, "name": "Andi"}, {"id": 2, "name": "Siti"}]}
+        )
+
+    def assignments(self):
+        self.send_json({"assignments": [{"id": 1, "title": "Backend Fundamentals"}]})
+
+    def fallback(self):
+        self.send_json({"detail": "Not Found"}, 404)
 
     def getRoutes(self):
         path = self.path
 
-        return {"/health": self.health}[path]
+        routes = {
+            "/": self.index,
+            "/health": self.health,
+            "/courses": self.courses,
+            "/students": self.students,
+            "/assignments": self.assignments,
+        }
+
+        return routes.setdefault(path, self.fallback)
 
     def do_GET(self):
-        # if self.path == "/":
-        #     self.send_json({"message": "Simple LMS Backend"})
-        # elif self.path == "/courses":
-        #     self.send_json(
-        #         {
-        #             "courses": [
-        #                 {"id": 1, "name": "Pemrograman Sisi Server"},
-        #                 {"id": 2, "name": "Basis Data"},
-        #             ]
-        #         }
-        #     )
-        # elif self.path == "/students":
-        #     self.send_json(
-        #         {"students": [{"id": 1, "name": "Andi"}, {"id": 2, "name": "Siti"}]}
-        #     )
-        # elif self.path == "/assignments":
-        #     self.send_json(
-        #         {"assignments": [{"id": 1, "title": "Backend Fundamentals"}]}
-        #     )
-        # else:
-        #     self.send_json({"detail": "Not Found"}, 404)
-
         self.getRoutes()()
 
 
