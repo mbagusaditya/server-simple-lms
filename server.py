@@ -10,30 +10,38 @@ class SimpleHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
+    def health(self):
+        self.send_json({"status": "ok"})
+
+    def getRoutes(self):
+        path = self.path
+
+        return {"/health": self.health}[path]
+
     def do_GET(self):
-        if self.path == "/":
-            self.send_json({"message": "Simple LMS Backend"})
-        elif self.path == "/health":
-            self.send_json({"status": "ok"})
-        elif self.path == "/courses":
-            self.send_json(
-                {
-                    "courses": [
-                        {"id": 1, "name": "Pemrograman Sisi Server"},
-                        {"id": 2, "name": "Basis Data"},
-                    ]
-                }
-            )
-        elif self.path == "/students":
-            self.send_json(
-                {"students": [{"id": 1, "name": "Andi"}, {"id": 2, "name": "Siti"}]}
-            )
-        elif self.path == "/assignments":
-            self.send_json(
-                {"assignments": [{"id": 1, "title": "Backend Fundamentals"}]}
-            )
-        else:
-            self.send_json({"detail": "Not Found"}, 404)
+        # if self.path == "/":
+        #     self.send_json({"message": "Simple LMS Backend"})
+        # elif self.path == "/courses":
+        #     self.send_json(
+        #         {
+        #             "courses": [
+        #                 {"id": 1, "name": "Pemrograman Sisi Server"},
+        #                 {"id": 2, "name": "Basis Data"},
+        #             ]
+        #         }
+        #     )
+        # elif self.path == "/students":
+        #     self.send_json(
+        #         {"students": [{"id": 1, "name": "Andi"}, {"id": 2, "name": "Siti"}]}
+        #     )
+        # elif self.path == "/assignments":
+        #     self.send_json(
+        #         {"assignments": [{"id": 1, "title": "Backend Fundamentals"}]}
+        #     )
+        # else:
+        #     self.send_json({"detail": "Not Found"}, 404)
+
+        self.getRoutes()()
 
 
 server = HTTPServer(("localhost", 8000), SimpleHandler)
