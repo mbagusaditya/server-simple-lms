@@ -1,7 +1,7 @@
 import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
-from modules import get_assignments, get_courses, get_students
+from modules import get_assignments, get_courses, get_enrollments, get_students
 
 
 class SimpleHandler(BaseHTTPRequestHandler):
@@ -27,6 +27,9 @@ class SimpleHandler(BaseHTTPRequestHandler):
     def assignments(self):
         self.send_json({"assignments": get_assignments()})
 
+    def enrollments(self):
+        self.send_json({"enrollments": get_enrollments()})
+
     def fallback(self):
         self.send_json({"detail": "Not Found"}, 404)
 
@@ -39,6 +42,7 @@ class SimpleHandler(BaseHTTPRequestHandler):
             "/courses": self.courses,
             "/students": self.students,
             "/assignments": self.assignments,
+            "/enrollments": self.enrollments,
         }
 
         return routes.setdefault(path, self.fallback)
