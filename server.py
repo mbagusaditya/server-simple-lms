@@ -30,7 +30,7 @@ class SimpleHandler(BaseHTTPRequestHandler):
     def fallback(self):
         self.send_json({"detail": "Not Found"}, 404)
 
-    def getRoutes(self):
+    def get_routes(self):
         path = self.path
 
         routes = {
@@ -44,7 +44,9 @@ class SimpleHandler(BaseHTTPRequestHandler):
         return routes.setdefault(path, self.fallback)
 
     def do_GET(self):
-        self.getRoutes()()
+        func = self.get_routes()
+
+        func()
 
 
 server = HTTPServer(("localhost", 8000), SimpleHandler)
